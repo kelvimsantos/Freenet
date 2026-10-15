@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: internet-gratis
+    runtime: node
+    plan: free
+    buildCommand: npm install --prefix backend
+    startCommand: npm start --prefix backend
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20.12.0
+      - key: MONGO_URI
+        sync: false # preencha no dashboard ou via script/render-env.sh
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true # troque por `openssl rand -hex 32` p/ AES-256 real
+      - key: ADS_DAILY_CAP
+        value: 20
+      - key: ADSENSE_CLIENT_ID
+        sync: false
+      - key: ADMOB_APP_ID
+        sync: false
+      - key: FRONTEND_URL
+        sync: false # ex: https://internet-gratis.onrender.com
+      - key: ROBOT_ENABLED
+        value: true
+      - key: ROBOT_MESSAGES_PER_CREDIT
+        value: 5
+      - key: ROBOT_SESSION_BONUS_MINUTES
+        value: 5
+      - key: ROBOT_SESSION_IDLE_MINUTES
+        value: 15
+      - key: ROBOT_CREDITS_DAILY_CAP
+        value: 3
+      - key: ROBOT_HISTORY_MESSAGES
+        value: 20
+      - key: ROBOT_MAX_MESSAGE_CHARS
+        value: 2000
+      - key: ROBOT_XP_PER_LEVEL
+        value: 10
+      - key: USER_DB_CACHE_TTL_MINUTES
+        value: 30
+      - key: USER_DB_TEST_TIMEOUT
+        value: 5000

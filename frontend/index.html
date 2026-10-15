@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internet Grátis — Ganhe internet assistindo anúncios</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">📶 Internet Grátis</div>
+    <div class="topbar-right">
+      <span id="balance" class="balance hidden">💰 <b id="balanceValue">0</b> créditos</span>
+      <button id="logoutBtn" class="btn btn-ghost hidden">Sair</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- AUTH -->
+    <section id="authView" class="card">
+      <h1>Ganhe internet de graça 🎉</h1>
+      <p class="muted">Assista anúncios, converse com o Robô Pet e troque créditos por internet.</p>
+      <div class="tabs">
+        <button id="tabLogin" class="tab active">Entrar</button>
+        <button id="tabRegister" class="tab">Criar conta</button>
+      </div>
+      <form id="authForm" class="form">
+        <input id="authName" class="input hidden" type="text" placeholder="Seu nome" autocomplete="name" />
+        <input id="authEmail" class="input" type="email" placeholder="Email" autocomplete="email" required />
+        <input id="authPass" class="input" type="password" placeholder="Senha" autocomplete="current-password" required />
+        <button class="btn btn-primary" type="submit">Continuar</button>
+        <p id="authError" class="error hidden"></p>
+      </form>
+    </section>
+
+    <!-- APP -->
+    <section id="appView" class="hidden">
+      <nav class="tabs app-tabs">
+        <button class="tab active" data-view="adsView">📺 Anúncios</button>
+        <button class="tab" data-view="robotView">🤖 Robô Pet</button>
+        <button class="tab" data-view="walletView">💳 Carteira</button>
+        <button class="tab" data-view="configView">⚙️ Robô: chaves</button>
+      </nav>
+
+      <!-- ADS -->
+      <div id="adsView" class="card">
+        <h2>Assista e ganhe</h2>
+        <p class="muted">Assista até o fim para receber os créditos. Limite diário aplicado.</p>
+        <button id="dailyBtn" class="btn btn-secondary">🎁 Resgatar bônus diário (+3)</button>
+        <div id="adsList" class="ads-list"></div>
+        <div id="adPlayer" class="ad-player hidden">
+          <h3 id="adTitle"></h3>
+          <p id="adDesc" class="muted"></p>
+          <video id="adVideo" class="ad-video hidden" controls playsinline></video>
+          <div class="progress"><div id="adProgress" class="progress-bar"></div></div>
+          <p id="adTimer" class="muted"></p>
+          <button id="adCloseBtn" class="btn btn-ghost hidden">Fechar</button>
+        </div>
+      </div>
+
+      <!-- ROBOT -->
+      <div id="robotView" class="card hidden">
+        <h2>Robô Pet 🐾</h2>
+        <p class="muted">Configure suas chaves na aba ⚙️ (sua key do agente + sua connection string do Atlas). Cada mensagem válida rende créditos.</p>
+        <div id="petInfo" class="pet-info muted">Carregando pet…</div>
+        <div id="chatBox" class="chat-box"></div>
+        <form id="chatForm" class="chat-form">
+          <input id="chatInput" class="input" type="text" placeholder="Fale com seu pet…" maxlength="2000" autocomplete="off" />
+          <button class="btn btn-primary" type="submit">Enviar</button>
+        </form>
+      </div>
+
+      <!-- WALLET -->
+      <div id="walletView" class="card hidden">
+        <h2>Sua carteira</h2>
+        <p class="big-balance">💰 <b id="walletBalance">0</b> créditos</p>
+        <h3>Trocar por internet</h3>
+        <div id="plansList" class="plans-list"></div>
+        <h3>Histórico</h3>
+        <div id="historyList" class="history-list"></div>
+      </div>
+
+      <!-- CONFIG -->
+      <div id="configView" class="card hidden">
+        <h2>Chaves do robô (só suas)</h2>
+        <p class="muted">Cada usuário usa a própria key do agente e o próprio Mongo Atlas. Os segredos são cifrados no servidor.</p>
+        <form id="configForm" class="form">
+          <label class="label">Provedor de IA
+            <select id="cfgProvider" class="input">
+              <option value="grok">Grok (xAI)</option>
+              <option value="gemini">Gemini (Google)</option>
+              <option value="openai">OpenAI</option>
+              <option value="anthropic">Anthropic</option>
+            </select>
+          </label>
+          <label class="label">Modelo (opcional)
+            <input id="cfgModel" class="input" type="text" placeholder="ex: grok-beta" />
+          </label>
+          <label class="label">Sua API Key do agente
+            <input id="cfgApiKey" class="input" type="password" placeholder="cole sua key (só salva se preencher)" autocomplete="off" />
+          </label>
+          <label class="label">Sua connection string do Mongo Atlas
+            <input id="cfgMongoUri" class="input" type="password" placeholder="mongodb+srv://... (só salva se preencher)" autocomplete="off" />
+          </label>
+          <button class="btn btn-primary" type="submit">Salvar</button>
+          <p id="configMsg" class="muted"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer muted">Internet Grátis • assista, converse e navegue</footer>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

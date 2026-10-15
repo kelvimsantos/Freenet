@@ -1,0 +1,13 @@
+
+added 40 packages, and audited 147 packages in 9s
+
+24 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+npm warn install-scripts 1 package has install scripts not yet covered by allowScripts:
+npm warn install-scripts   mongodb-memory-server@10.4.3 (postinstall: node ./postinstall.js)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+EXIT:0
+SYNTAX_OK

@@ -1,0 +1,5 @@
+{"ok":true,"duplicate":false,"reward":2,"balance":4}{"ok":true,"duplicate":false,"balance":7}
+{"balance":7}
+daily_bonus 3
+ads_watch 2
+welcome_bonus 2
