@@ -15,9 +15,9 @@ services:
       - key: MONGO_URI
         sync: false # OBRIGATÓRIO no Render: cole sua connection string do Atlas. Sem isso o backend cai em memória volátil e APAGA logins a cada restart.
       - key: JWT_SECRET
-        sync: false # Fixe um valor longo (openssl rand -hex 32) via Dashboard ou scripts/render-env.sh. NUNCA troque depois — troca invalida todos os tokens (logout geral).
+        generateValue: true # gerado 1x no primeiro deploy e mantido — NÃO troque depois (troca desloga todo mundo).
       - key: ENCRYPTION_KEY
-        sync: false # 64 hex (openssl rand -hex 32). Trocar invalida segredos cifrados do robô.
+        generateValue: true # 64 hex gerado 1x — NÃO troque depois (invalida segredos do robô).
       - key: ADS_DAILY_CAP
         value: 20
       - key: ADSENSE_CLIENT_ID
