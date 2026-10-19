@@ -2,13 +2,17 @@
 
 const jwt = require('jsonwebtoken');
 
+function getSecret() {
+  return process.env.JWT_SECRET || 'dev-secret';
+}
+
 function sign(user) {
   const id = user.id || String(user._id);
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'dev-secret', { expiresIn: '7d' });
+  return jwt.sign({ id }, getSecret(), { expiresIn: '7d' });
 }
 
 function verify(token) {
-  return jwt.verify(token, process.env.JWT_SECRET || 'dev-secret');
+  return jwt.verify(token, getSecret());
 }
 
 function authMiddleware(req, res, next) {

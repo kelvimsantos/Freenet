@@ -5,7 +5,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const { connectMainDb, isMemoryDb } = require('./config/db');
+const { connectMainDb, isMemoryDb, getDbMode } = require('./config/db');
 
 const app = express();
 app.use(cors());
@@ -17,7 +17,13 @@ if (fs.existsSync(path.join(frontendDir, 'index.html'))) {
   app.use(express.static(frontendDir));
 }
 
-app.get('/health', (req, res) => res.json({ ok: true, app: 'internet-gratis' }));
+app.get('/health', (req, res) => res.json({ ok: true, app: 'internet-gratis', db: getDbMode(), memory: isMemoryDb() }));
+
+// Aviso precoce: sem JWT_SECRET fixo, todo restart invalida os tokens (logout geral).
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'dev-secret' || process.env.JWT_SECRET.length < 32) {
+  console.warn('[auth] AVISO: JWT_SECRET ausente/curto — tokens serão invalidados a cada restart. '
+    + 'Defina JWT_SECRET longo e fixo no Render (Environment). Gerar com: openssl rand -hex 32');
+}
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/ads', require('./routes/ads'));

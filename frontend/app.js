@@ -301,5 +301,19 @@ document.querySelectorAll('.app-tabs .tab').forEach((b) => {
 });
 
 /* ---------- INIT ---------- */
-if (localStorage.getItem(LS_TOKEN)) enterApp();
-else show('authView');
+// Valida a sessão salva: token pode ter expirado ou sido invalidado por
+// troca de JWT_SECRET / banco zerado no restart. Sem isso o app abria
+// direto no appView quebrado (saldo/ads falhando em silêncio).
+async function boot() {
+  const saved = localStorage.getItem(LS_TOKEN);
+  if (!saved) { show('authView'); return; }
+  try {
+    await api('/api/auth/me', { headers: headers() });
+    enterApp();
+  } catch (_) {
+    localStorage.removeItem(LS_TOKEN);
+    localStorage.removeItem(LS_USER);
+    show('authView');
+  }
+}
+boot();

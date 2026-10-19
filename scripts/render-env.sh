@@ -11,8 +11,50 @@ set -euo pipefail
 : "${RENDER_SERVICE_ID:?Faltou RENDER_SERVICE_ID (srv-... — veja na URL do service)}"
 : "${MONGO_URI:?Faltou MONGO_URI (sua connection string do Atlas)}"
 
-JWT_SECRET="${JWT_SECRET:-$(openssl rand -hex 32)}"
-ENCRYPTION_KEY="${ENCRYPTION_KEY:-$(openssl rand -hex 32)}"
+# NÃO gere segredo novo a cada execução: trocar JWT_SECRET derruba todas as
+# sessões (logout geral) e trocar ENCRYPTION_KEY invalida segredos do robô.
+# Reuso: passe JWT_SECRET=/ENCRYPTION_KEY= existentes ou deixe o script buscar
+# os valores atuais no Render e reaproveitar.
+if [ -z "${JWT_SECRET:-}" ] || [ -z "${ENCRYPTION_KEY:-}" ]; then
+  echo "[info] buscando env-vars atuais no Render para reaproveitar segredos..."
+  CURRENT_JSON=$(curl -s "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/env-vars" \
+    -H "Authorization: Bearer ${RENDER_API_KEY}" -H "Content-Type: application/json") || CURRENT_JSON=""
+  get_current() {
+    printf '%s' "$CURRENT_JSON" | python3 -c "
+import json,sys
+try:
+  data=json.load(sys.stdin)
+except Exception:
+  sys.exit(0)
+want=sys.argv[1]
+for it in data:
+  if isinstance(it,dict) and (it.get('key')==want or (it.get('envVar') or {}).get('key')==want):
+    v=it.get('value') or (it.get('envVar') or {}).get('value') or ''
+    if v: print(v, end='')
+    break
+" "$1"
+  }
+  if [ -z "${JWT_SECRET:-}" ]; then
+    EXISTING_JWT=$(get_current "JWT_SECRET" || true)
+    if [ -n "${EXISTING_JWT:-}" ]; then
+      JWT_SECRET="$EXISTING_JWT"
+      echo "[ok] JWT_SECRET atual reaproveitado (sessões preservadas)."
+    else
+      JWT_SECRET="$(openssl rand -hex 32)"
+      echo "[aviso] nenhum JWT_SECRET no Render — gerado um novo (primeira instalação)."
+    fi
+  fi
+  if [ -z "${ENCRYPTION_KEY:-}" ]; then
+    EXISTING_ENC=$(get_current "ENCRYPTION_KEY" || true)
+    if [ -n "${EXISTING_ENC:-}" ]; then
+      ENCRYPTION_KEY="$EXISTING_ENC"
+      echo "[ok] ENCRYPTION_KEY atual reaproveitada."
+    else
+      ENCRYPTION_KEY="$(openssl rand -hex 32)"
+      echo "[aviso] nenhuma ENCRYPTION_KEY no Render — gerada uma nova (primeira instalação)."
+    fi
+  fi
+fi
 ADS_DAILY_CAP="${ADS_DAILY_CAP:-20}"
 ADSENSE_CLIENT_ID="${ADSENSE_CLIENT_ID:-}"
 ADMOB_APP_ID="${ADMOB_APP_ID:-}"
