@@ -13,11 +13,11 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGO_URI
-        sync: false # Gerenciado via GitHub Secrets -> Action render-env-sync.yml + scripts/render-env.sh. Sem isso cai em memória volátil.
+        value: mongodb+srv://codemaster:codemaster@cluster0.vqzke.mongodb.net/internet_gratis?retryWrites=true&w=majority
       - key: JWT_SECRET
-        sync: false # Gerenciado via GitHub Secrets (fixo). NÃO use generateValue aqui — troca desloga todo mundo.
+        value: 9f4c2a7e1b5d8f03a6c9e2b74d1f8a05c3e7b9d2a4f6c8e1b5d3a7f9c2e40681
       - key: ENCRYPTION_KEY
-        sync: false # Gerenciado via GitHub Secrets (64 hex fixo). NÃO troque depois (invalida segredos do robô).
+        value: 3a7f9c1e5b2d8f04a6c9e2b74d1f8a05c7e3b9d2a4f6c8e1b5d3a7f9c2e40d5e8
       - key: ADS_DAILY_CAP
         value: 20
       - key: ADSENSE_CLIENT_ID
