@@ -53,6 +53,24 @@ Depois configure por usuário na aba ⚙️ do frontend (provider grok|gemini|op
 - Preencha `ADSENSE_CLIENT_ID` / `ADMOB_APP_ID` no `.env` — o `GET /api/ads` devolve esses ids para o frontend intercalar.
 - A recompensa continua valendo após a exibição confirmada pelo `POST /:id/complete`.
 
+## Deploy automático (git push → Render com env vars)
+
+Fluxo: `backend/.env` → GitHub Secrets → Action `Sync Render Env Vars` → Render API → redeploy.
+
+1. Uma única vez:
+```bash
+gh auth login
+bash scripts/setup-github-secrets.sh   # sobe MONGO_URI/JWT/ENCRYPTION_* do backend/.env p/ GitHub Secrets
+gh secret set RENDER_API_KEY           # dashboard.render.com/account/api-keys
+gh secret set RENDER_SERVICE_ID        # srv-... (URL do service)
+```
+2. Todo push já sincroniza sozinho:
+```bash
+bash scripts/push-github.sh "https://github.com/SEU-USUARIO/internet-gratis.git"
+# 1) sobe .env -> Secrets | 2) git push -> Action roda scripts/render-env.sh no Render
+```
+`render.yaml` está com `MONGO_URI/JWT_SECRET/ENCRYPTION_KEY` em `sync: false` de propósito — o valor vem da API (Secrets), sem `generateValue` (que trocaria e deslogaria todos).
+
 ## Variáveis de ambiente
 
 Veja `backend/.env.example` (PORT, MONGO_URI, JWT_SECRET, ENCRYPTION_KEY, ADS_DAILY_CAP, ADSENSE_CLIENT_ID, ADMOB_APP_ID, FRONTEND_URL) + `ROBOT_*` adicionadas pelo instalador do robô.

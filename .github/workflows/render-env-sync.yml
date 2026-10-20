@@ -1,0 +1,31 @@
+name: Sync Render Env Vars
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sync-env:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync env vars to Render (via API)
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+          ADS_DAILY_CAP: ${{ secrets.ADS_DAILY_CAP }}
+          ADSENSE_CLIENT_ID: ${{ secrets.ADSENSE_CLIENT_ID }}
+          ADMOB_APP_ID: ${{ secrets.ADMOB_APP_ID }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+          ROBOT_ENABLED: ${{ secrets.ROBOT_ENABLED }}
+        run: |
+          set -euo pipefail
+          if [ -z "${RENDER_API_KEY:-}" ]; then echo "::warning::RENDER_API_KEY ausente — pulando sync (configure em GitHub Secrets)"; exit 0; fi
+          if [ -z "${RENDER_SERVICE_ID:-}" ]; then echo "::warning::RENDER_SERVICE_ID ausente — pulando sync"; exit 0; fi
+          if [ -z "${MONGO_URI:-}" ]; then echo "::error::MONGO_URI ausente nos Secrets — defina MONGO_URI em GitHub Secrets"; exit 1; fi
+          bash scripts/render-env.sh

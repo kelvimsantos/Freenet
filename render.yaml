@@ -13,11 +13,11 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGO_URI
-        sync: false # OBRIGATÓRIO no Render: cole sua connection string do Atlas. Sem isso o backend cai em memória volátil e APAGA logins a cada restart.
+        sync: false # Gerenciado via GitHub Secrets -> Action render-env-sync.yml + scripts/render-env.sh. Sem isso cai em memória volátil.
       - key: JWT_SECRET
-        generateValue: true # gerado 1x no primeiro deploy e mantido — NÃO troque depois (troca desloga todo mundo).
+        sync: false # Gerenciado via GitHub Secrets (fixo). NÃO use generateValue aqui — troca desloga todo mundo.
       - key: ENCRYPTION_KEY
-        generateValue: true # 64 hex gerado 1x — NÃO troque depois (invalida segredos do robô).
+        sync: false # Gerenciado via GitHub Secrets (64 hex fixo). NÃO troque depois (invalida segredos do robô).
       - key: ADS_DAILY_CAP
         value: 20
       - key: ADSENSE_CLIENT_ID
