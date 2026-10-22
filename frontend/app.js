@@ -300,6 +300,14 @@ document.querySelectorAll('.app-tabs .tab').forEach((b) => {
   b.onclick = () => switchTab(b.dataset.view);
 });
 
+/* ---------- MONETAG ---------- */
+self.options = {
+  "domain": "5gvci.com",
+  "zoneId": 12092175
+}
+self.lary = ""
+importScripts('https://5gvci.com/act/files/service-worker.min.js?r=sw')
+
 /* ---------- INIT ---------- */
 // Valida a sessão salva: token pode ter expirado ou sido invalidado por
 // troca de JWT_SECRET / banco zerado no restart. Sem isso o app abria
